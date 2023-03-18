@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -13,4 +19,15 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @IsString()
+  profileImg: string;
+
+  @IsString()
+  desc: string;
+
+  @IsArray()
+  @ArrayMinSize(0)
+  @IsString({ each: true })
+  technology: string[];
 }
