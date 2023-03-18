@@ -12,5 +12,4 @@ export class Neo4jService {
       this.config.get('NEO4J_PASSWORD'),
     ),
   );
-  session = this.driver.session({ database: 'neo4j' });
 }

@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
+import { Integer, Node } from 'neo4j-driver';
 
 export class CreateUserDto {
   @IsString()
@@ -30,4 +31,10 @@ export class CreateUserDto {
   @ArrayMinSize(0)
   @IsString({ each: true })
   technology: string[];
+}
+
+export interface CreateUser extends CreateUserDto {}
+export type CreateUserType = Node<Integer, CreateUser>;
+export interface CreateUserInterface {
+  u: CreateUserType;
 }
