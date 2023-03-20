@@ -82,12 +82,12 @@ export class ProblemService {
 
   async fetchAllProblems() {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (q:Problem)<-[:ASK]-(u:User) RETURN q, u`;
+    const query = `MATCH (p:Problem)<-[:ASK]-(u:User) RETURN p, u`;
     return await session.executeRead(async (tx) => {
       try {
         const result = await tx.run(query);
         const records = result.records.map((record) => {
-          const problem = record.get('q');
+          const problem = record.get('p');
           const user = record.get('u');
           return [{ user: user.properties }, { problem: problem.properties }];
         });
@@ -104,7 +104,7 @@ export class ProblemService {
 
   async fetchUserProblems(userProblemDto: UserProblemDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (u:User {name:$username})-[:ASK]->(q:Problem) RETURN q`;
+    const query = `MATCH (u:User {name:$username})-[:ASK]->(p:Problem) RETURN p`;
     return await session.executeRead(async (tx) => {
       try {
         const result = await tx.run(query, {
