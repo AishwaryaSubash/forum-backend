@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Neo4jError } from 'neo4j-driver';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { CreateReplyDto, CreateReplyInterface } from './dto/create-reply.dto';
+import { CreateReplyDto } from './dto/create-reply.dto';
 
 @Injectable()
 export class ReplyService {
@@ -10,18 +9,21 @@ export class ReplyService {
 
   async createReply(createReplyDto: CreateReplyDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (u:User {name:$username})
-                   MATCH (p:Problem {question:$question})
-                   CREATE (r:Reply {reply:$reply})
-                   MERGE (r)-[:ANSWER]->(p)
+    const query = `MATCH (p:Problem {question:$question}) 
+                   MATCH (u:User {name:$username})
+                   CREATE (r:Reply {content:$content})
+                   SET r.createdAt=$createdAt, r.reactions=$reactions
+                   MERGE (p)-[:HAS]->(r)
                    MERGE (u)-[:POST]->(r)
-                   RETURN p, u, r`;
+                   RETURN p.question, u.name, r.content`;
     return await session.executeWrite(async (tx) => {
       try {
         const result = await tx.run(query, {
           username: createReplyDto.username,
           question: createReplyDto.question,
-          reply: createReplyDto.reply,
+          content: createReplyDto.content,
+          reactions: createReplyDto.reactions,
+          createdAt: Date.now(),
         });
         const records = result.records.map((record) => {
           const user = record.get('u');
@@ -33,7 +35,20 @@ export class ReplyService {
             { reply: reply.properties },
           ];
         });
-        return records;
+        delete records[0][0].user.password;
+        delete records[0][0].user.createdAt;
+        delete records[0][0].user.technology;
+        delete records[0][0].user.email;
+        delete records[0][0].problem.createdAt;
+        delete records[0][0].problem.description;
+        delete records[0][0].problem.description;
+        delete records[0][0].problem.description;
+
+        if (records.length == 0) {
+          return { message: 'Unknown Error', verified: false };
+        } else {
+          return records;
+        }
       } catch (e) {
         if (e instanceof Neo4jError) {
           if (e.code === 'Neo.ClientError.Schema.ConstraintValidationFailed') {

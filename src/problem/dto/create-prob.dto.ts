@@ -16,9 +16,6 @@ export class CreateProblemDto {
 
   @IsString()
   problemImg: string;
-
-  @IsNumber()
-  upvote: number;
 }
 
 export interface CreateProblem extends CreateProblemDto {}

@@ -52,7 +52,7 @@ export class ProblemService {
     const query = `MATCH (u:User {name:$username})
                    CREATE (p:Problem {question:$question})
                    MERGE (u)-[:ASK]->(p)
-                   ON CREATE SET p.description=$description,
+                   ON CREATE SET p.description=$description, p.createdAt=$createdAt,
                    p.problemImg=$problemImg, p.upvote=$upvote
                    RETURN p`;
     return await session.executeWrite(async (tx) => {
@@ -62,7 +62,7 @@ export class ProblemService {
           question: createProblemDto.question,
           description: createProblemDto.description,
           problemImg: createProblemDto.problemImg,
-          upvote: createProblemDto.upvote,
+          upvote: 0,
           createdAt: Date.now(),
         });
         const records = result.records.map((record) => {

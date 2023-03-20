@@ -6,14 +6,15 @@ import { Neo4jModule } from './neo4j/neo4j.module';
 import { UserModule } from './user/user.module';
 import { ProblemModule } from './problem/problem.module';
 import { AuthModule } from './auth/auth.module';
+import { ReplyModule } from './reply/reply.module';
 
 @Module({
   imports: [
     Neo4jModule,
     UserModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot(),
     ProblemModule,
-    AuthModule,
+    ReplyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
