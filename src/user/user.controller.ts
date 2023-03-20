@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { JwtGuard } from 'src/auth/guard/jwt.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user.dto';
 import { GetUserDetailsDto } from './dto/get-user-details.dto';
@@ -36,6 +37,7 @@ export class UserController {
     return await this.userService.updateDetails(updateDetails);
   }
 
+  @UseGuards(JwtGuard)
   @Post('getUserDetails')
   async getUserDetails(@Body() getUserDetails: GetUserDetailsDto) {
     return await this.userService.getUserDetails(getUserDetails);

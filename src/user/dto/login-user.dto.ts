@@ -11,7 +11,9 @@ export class LoginUserDto {
   password: string;
 }
 
-export interface LoginUser extends LoginUserDto {}
+export interface LoginUser extends LoginUserDto {
+  email: string;
+}
 export type LoginUserType = Node<Integer, LoginUser>;
 export interface LoginUserInterface {
   u: LoginUserType;
