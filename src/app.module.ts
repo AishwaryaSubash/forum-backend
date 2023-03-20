@@ -12,9 +12,10 @@ import { ReplyModule } from './reply/reply.module';
   imports: [
     Neo4jModule,
     UserModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     ProblemModule,
     ReplyModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
