@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { ProblemModule } from './problem/problem.module';
 import { AuthModule } from './auth/auth.module';
 import { ReplyModule } from './reply/reply.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ReplyModule } from './reply/reply.module';
     ProblemModule,
     ReplyModule,
     AuthModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
