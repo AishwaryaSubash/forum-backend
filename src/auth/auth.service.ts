@@ -5,15 +5,14 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
-import {
-  CreateUserDto,
-  CreateUserInterface,
-} from 'src/user/dto/create-user.dto';
+
 import * as argon2 from 'argon2';
 import { Neo4jError } from 'neo4j-driver';
-import { LoginUserDto, LoginUserInterface } from 'src/user/dto/login-user.dto';
+
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto, CreateUserInterface } from './dto/create-user.dto';
+import { LoginUserDto, LoginUserInterface } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
