@@ -5,10 +5,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
-
 import * as argon2 from 'argon2';
 import { Neo4jError } from 'neo4j-driver';
-
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto, CreateUserInterface } from './dto/create-user.dto';
