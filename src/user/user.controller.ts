@@ -12,26 +12,32 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @UseGuards(JwtGuard)
   @Post('createUser')
   async createUser(@Body() createUserDto: CreateUserDto) {
     return await this.userService.createUser(createUserDto);
   }
 
+  @UseGuards(JwtGuard)
   @Post('loginUser')
   async loginUser(@Body() loginUserDto: LoginUserDto) {
     return await this.userService.loginUser(loginUserDto);
   }
 
+  @UseGuards(JwtGuard)
   @Post('updateDescription')
   async updateDescription(@Body() updateDescription: updateDescriptionDto) {
     return await this.userService.updateDescription(updateDescription);
   }
 
+  @UseGuards(JwtGuard)
   @Post('updateProfilePic')
   async updateProfilePic(@Body() updateProfile: UpdateProfileDto) {
     return await this.userService.updateProfilePic(updateProfile);
   }
 
+  @UseGuards(JwtGuard)
   @Post('updateDetails')
   async updateDetails(@Body() updateDetails: UserDetailsDto) {
     return await this.userService.updateDetails(updateDetails);
@@ -43,6 +49,7 @@ export class UserController {
     return await this.userService.getUserDetails(getUserDetails);
   }
 
+  @UseGuards(JwtGuard)
   @Post('followUser')
   async followUser(@Body() followUser: FollowUserDto) {
     return await this.userService.followUser(followUser);
