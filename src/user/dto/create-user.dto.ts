@@ -21,16 +21,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @IsString()
-  profileImg: string;
-
-  @IsString()
-  desc: string;
-
-  @IsArray()
-  @ArrayMinSize(0)
-  @IsString({ each: true })
-  technology: string[];
+ 
 }
 
 export interface CreateUser extends CreateUserDto {}
