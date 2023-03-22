@@ -33,9 +33,9 @@ export class AuthService {
           name: createUserDto.name,
           password: hash,
           email: createUserDto.email,
-          profileImg: createUserDto.profileImg,
-          desc: createUserDto.desc,
-          technology: createUserDto.technology,
+          profileImg: '',
+          desc: '',
+          technology: [],
           createdAt: Date.now(),
         });
         const records = result.records.map((record) => {
