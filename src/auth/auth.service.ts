@@ -102,7 +102,7 @@ export class AuthService {
     const payload = { email, sub: userId };
     const secret = this.config.get('SALT');
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: '900m', // 15hr
       secret: secret,
     });
     return { access_token: token };
