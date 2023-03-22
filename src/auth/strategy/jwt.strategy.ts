@@ -3,8 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-
+import { CreateUserJwt } from '../dto/create-user.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -19,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
     const query = `MATCH (u:User {name:$sub}) where u.email = $email return u`;
     //   console.log(query);
-    let user: CreateUserDto;
+    let user: CreateUserJwt;
     await session
       .run(query, {
         sub: payload.sub,
