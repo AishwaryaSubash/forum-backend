@@ -8,7 +8,7 @@ export class ReactToReplyDto {
 
   @IsString()
   @IsNotEmpty()
-  reactions: string;
+  reaction: string;
 }
 
 export interface ReactToReply extends ReactToReplyDto {}
