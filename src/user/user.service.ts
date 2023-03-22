@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { Neo4jError } from 'neo4j-driver';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
@@ -37,9 +42,9 @@ export class UserService {
           name: createUserDto.name,
           password: hash,
           email: createUserDto.email,
-          profileImg: createUserDto.profileImg,
-          desc: createUserDto.desc,
-          technology: createUserDto.technology,
+          profileImg: '',
+          desc: '',
+          technology: [],
           createdAt: Date.now(),
         });
         const records = result.records.map((record) => {
@@ -230,16 +235,21 @@ export class UserService {
               followed: true,
             };
           } else {
-            return {
-              followed: false,
-            };
+            throw new ForbiddenException({ followed: false });
           }
         });
-        return records.length == 0 ? { followed: false } : { followed: true };
+        if (records.length == 0) {
+          throw new ForbiddenException({ followed: false });
+        } else {
+          return {
+            followed: true,
+          };
+        }
       } catch (e) {
-        console.log(e);
         if (e instanceof Neo4jError) {
           throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else if (e instanceof ForbiddenException) {
+          throw e;
         } else {
           throw e;
         }
