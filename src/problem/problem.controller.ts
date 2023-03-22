@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateProblemDto } from './dto/create-prob.dto';
+import { DeleteProblemDto } from './dto/delete-prob.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { UpvoteProblemDto } from './dto/upvote-prob.dto';
 import { UserProblemDto } from './dto/user-prob.dto';
@@ -32,5 +33,9 @@ export class ProblemController {
   @Post('updateImage')
   async updateImage(updateImageDto: UpdateImageDto) {
     return await this.problemService.updateImage(updateImageDto);
+  }
+  @Post('deleteProblem')
+  async deleteProblem(deleteProblemDto: DeleteProblemDto) {
+    return await this.problemService.deleteProblem(deleteProblemDto);
   }
 }

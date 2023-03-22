@@ -5,6 +5,7 @@ import {
   CreateProblemDto,
   CreateProblemInterface,
 } from './dto/create-prob.dto';
+import { DeleteProblemDto } from './dto/delete-prob.dto';
 import { UpdateImageDto, UpdateImageInterface } from './dto/update-image.dto';
 import {
   UpvoteProblemDto,
@@ -176,6 +177,31 @@ export class ProblemService {
           };
         });
         return records;
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+
+  // ! Changes reqd
+  async deleteProblem(deleteProblemDto: DeleteProblemDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (p:Problem {question: $question})-[:HAS]->(r:Reply)
+                   DETACH DELETE p, r`;
+    return await session.executeWrite(async (tx) => {
+      try {
+        const result = await tx.run(query, {
+          question: deleteProblemDto.question,
+        });
+        var record = result.records.map((record) => {
+          const problem = record.get('p');
+          return problem.properties;
+        });
+        return record;
       } catch (e) {
         if (e instanceof Neo4jError) {
           throw new HttpException(e.message, HttpStatus.FORBIDDEN);

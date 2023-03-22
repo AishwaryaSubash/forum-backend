@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Integer, Node } from 'neo4j-driver';
 
 export class CreateProblemDto {
