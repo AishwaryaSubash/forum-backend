@@ -8,6 +8,7 @@ import { ProblemModule } from './problem/problem.module';
 import { AuthModule } from './auth/auth.module';
 import { ReplyModule } from './reply/reply.module';
 import { CategoryModule } from './category/category.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CategoryModule } from './category/category.module';
     ReplyModule,
     AuthModule,
     CategoryModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
