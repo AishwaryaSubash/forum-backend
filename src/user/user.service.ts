@@ -256,4 +256,39 @@ export class UserService {
       }
     });
   }
+
+  async unfollowUser(unfollowUser: FollowUserDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (:User {name:$follower})-[r:FOLLOW]->(:User {name:$leader})
+                   DELETE r RETURN r`;
+    return await session.executeWrite(async (tx) => {
+      try {
+        const result = await tx.run<FollowUserInterface>(query, {
+          follower: unfollowUser.follower,
+          leader: unfollowUser.leader,
+        });
+        const records = result.records.map((record) => {
+          const returnValue = record.map((value) => {
+            return value.properties;
+          });
+          return returnValue;
+        });
+        if (records.length > 0) {
+          return {
+            unfollowed: true,
+          };
+        } else {
+          throw new ForbiddenException({ unfollowed: false });
+        }
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else if (e instanceof ForbiddenException) {
+          throw e;
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
 }

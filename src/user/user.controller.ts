@@ -54,4 +54,10 @@ export class UserController {
   async followUser(@Body() followUser: FollowUserDto) {
     return await this.userService.followUser(followUser);
   }
+
+  @UseGuards(JwtGuard)
+  @Post('unfollowUser')
+  async unfollowUser(@Body() followUser: FollowUserDto) {
+    return await this.userService.unfollowUser(followUser);
+  }
 }
