@@ -8,14 +8,16 @@ export class FulltextService {
   async fullTextSearch(fullTextDto: FullTextDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
     const query = `CALL db.index.fulltext.queryNodes("fullTextSearch", $text) YIELD node, score
-                   WITH properties(node) as n,labels(node) as lable,score as score
-                   RETURN lable,{username:n.name,userdesc:n.desc,technology:n.technology,question:n.question,questiondesc:n.description} ,  score`;
+                   WITH properties(node) as n,labels(node) as label,score as score
+                   RETURN label,{username:n.name,userdesc:n.desc,technology:n.technology,question:n.question,questiondesc:n.description} ,  score`;
 
     const result = await session.run(query, {
       text: fullTextDto.text,
     });
     const res = result.records.map((item) => {
-      return item
+      return item.map((i) => {
+        return i;
+      });
     });
     return res;
   }
