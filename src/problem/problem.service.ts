@@ -95,7 +95,7 @@ export class ProblemService {
             return i;
           });
         });
-        return records[0];
+        return records;
       } catch (e) {
         if (e instanceof Neo4jError) {
           throw new HttpException(e.message, HttpStatus.FORBIDDEN);
