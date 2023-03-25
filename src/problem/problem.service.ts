@@ -253,7 +253,7 @@ export class ProblemService {
                    OPTIONAL MATCH (p)-[:HAS]->(r:Reply)
                    OPTIONAL MATCH (r)<-[:POST]-(u:User)
                    WITH p as p, collect({reply:properties(r),user:{name:properties(u).name,profileImg:properties(u).profileImg}}) as r
-                   RETURN {problem:properties(p),reply:r} as a`;
+                   RETURN {problem:properties(p),replyMain:r} as a`;
     return await session.executeRead(async (tx) => {
       try {
         const value = await tx.run(query, {
