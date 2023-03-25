@@ -255,16 +255,23 @@ export class ProblemService {
                    WITH p as p, collect({reply:properties(r),user:{name:properties(u).name,profileImg:properties(u).profileImg}}) as r
                    RETURN {problem:properties(p),reply:r} as a`;
     return await session.executeRead(async (tx) => {
-      const value = await tx.run(query, {
-        question: getOneProblem.question,
-      });
-      const records = value.records.map((item) => {
-        return item.map((i) => {
-          return i;
+      try {
+        const value = await tx.run(query, {
+          question: getOneProblem.question,
         });
-      });
-      console.log(records);
-      return records;
+        const records = value.records.map((item) => {
+          return item.map((i) => {
+            return i;
+          });
+        });
+        return records;
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else {
+          throw e;
+        }
+      }
     });
   }
 }
