@@ -3,5 +3,9 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class MarkAnswerDto {
   @IsString()
   @IsNotEmpty()
-  categName: string;
+  question: string;
+
+  @IsString()
+  @IsNotEmpty()
+  replyId: string;
 }
