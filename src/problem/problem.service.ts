@@ -81,7 +81,8 @@ export class ProblemService {
 
   async fetchAllProblems() {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (p:Problem)<-[:ASK]-(u:User)
+    const query = `MATCH (p:Problem)
+                   OPTIONAL MATCH (p)<-[:ASK]-(u:User)
                    WITH properties(p) as p ,properties(u) as u
                    RETURN {problem:p,username:u.name,userProfileImg:u.profileImg}`;
     return await session.executeRead(async (tx) => {
