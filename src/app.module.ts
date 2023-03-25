@@ -7,8 +7,8 @@ import { UserModule } from './user/user.module';
 import { ProblemModule } from './problem/problem.module';
 import { AuthModule } from './auth/auth.module';
 import { ReplyModule } from './reply/reply.module';
-import { CategoryModule } from './category/category.module';
 import { AdminModule } from './admin/admin.module';
+import { FulltextModule } from './fulltext/fulltext.module';
 
 @Module({
   imports: [
@@ -18,8 +18,8 @@ import { AdminModule } from './admin/admin.module';
     ProblemModule,
     ReplyModule,
     AuthModule,
-    CategoryModule,
     AdminModule,
+    FulltextModule,
   ],
   controllers: [AppController],
   providers: [AppService],
