@@ -262,7 +262,7 @@ export class ProblemService {
         const records = value.records.map((item) => {
           return item.map((i) => {
             return i;
-          });
+          })[0];
         });
         return records;
       } catch (e) {
