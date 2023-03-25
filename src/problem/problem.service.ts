@@ -84,9 +84,9 @@ export class ProblemService {
 
   async fetchAllProblems() {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (p:Problem)<-[:ASK]-(u:User)
-                   WITH properties(p) as p ,properties(u) as u
-                   RETURN {problem:p,username:u.name,userProfileImg:u.profileImg}`;
+    const query = `MATCH (p:Problem)<-[r:ASK]-(u:User)
+                   WITH properties(p) as p ,properties(u) as u,r as r
+                   RETURN {problem:p,username:u.name,userProfileImg:u.profileImg,category:r.categName}`;
     return await session.executeRead(async (tx) => {
       try {
         const result = await tx.run(query);
@@ -233,9 +233,6 @@ export class ProblemService {
             return answer;
           });
           console.log(answers);
-          // console.log(problem, reply, replyTo);
-          // replyTo = replyTo == null ? { properties: {} } : replyTo;
-          // const problem = record.get('p');
           return answers;
         });
         return record;
