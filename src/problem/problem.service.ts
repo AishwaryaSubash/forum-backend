@@ -246,4 +246,25 @@ export class ProblemService {
       }
     });
   }
+
+  async getOneProblemAndReplies(getOneProblem: UpvoteProblemDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (p:Problem {question:$question}) 
+                   OPTIONAL MATCH (p)-[:HAS]->(r:Reply)
+                   OPTIONAL MATCH (r)<-[:POST]-(u:User)
+                   WITH p as p, collect({reply:properties(r),user:{name:properties(u).name,profileImg:properties(u).profileImg}}) as r
+                   RETURN {problem:properties(p),reply:r} as a`;
+    return await session.executeRead(async (tx) => {
+      const value = await tx.run(query, {
+        question: getOneProblem.question,
+      });
+      const records = value.records.map((item) => {
+        return item.map((i) => {
+          return i;
+        });
+      });
+      console.log(records);
+      return records;
+    });
+  }
 }

@@ -44,4 +44,10 @@ export class ProblemController {
   async fetchAllProbInCateg(@Body() allProbInCategDto: AllProbInCategDto) {
     return await this.problemService.fetchAllProbInCateg(allProbInCategDto);
   }
+
+  @Post('getOneProblemAndReplies')
+  async getOneProblemAndReplies(@Body() getOneProblem: UpvoteProblemDto) {
+    return await this.problemService.getOneProblemAndReplies(getOneProblem);
+    
+  }
 }
