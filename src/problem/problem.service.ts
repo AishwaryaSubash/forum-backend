@@ -189,15 +189,18 @@ export class ProblemService {
     });
   }
 
-  // ! Changes reqd
   async deleteProblem(deleteProblemDto: DeleteProblemDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (p:Problem {question: $question})-[:HAS]->(r:Reply)
-                   DETACH DELETE p, r`;
+    const query = `MATCH (p:Problem {question: $question})
+                   MATCH (u:User {name: $username})-[:ASK]->(p)
+                   OPTIONAL MATCH (p)-[:HAS]->(r:Reply)
+                   OPTIONAL MATCH (r)<-[:TO]-(toReply:Reply)
+                   DETACH DELETE p, r, toReply RETURN p, r, toReply`;
     return await session.executeWrite(async (tx) => {
       try {
         const result = await tx.run(query, {
           question: deleteProblemDto.question,
+          username: deleteProblemDto.username,
         });
         var record = result.records.map((record) => {
           const problem = record.get('p');

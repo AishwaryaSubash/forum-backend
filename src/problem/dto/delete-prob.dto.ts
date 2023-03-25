@@ -5,6 +5,10 @@ export class DeleteProblemDto {
   @IsString()
   @IsNotEmpty()
   question: string;
+
+  @IsString()
+  @IsNotEmpty()
+  username: string;
 }
 
 export interface DeleteProblem extends DeleteProblemDto {}
