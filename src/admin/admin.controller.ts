@@ -10,4 +10,8 @@ export class AdminController {
   async markAnswer(@Body() markAnswerDto: MarkAnswerDto) {
     return await this.adminService.markAnswer(markAnswerDto);
   }
+  @Post('unmarkAnswer')
+  async unmarkAnswer(@Body() markAnswerDto: MarkAnswerDto) {
+    return await this.adminService.unmarkAnswer(markAnswerDto);
+  }
 }

@@ -8,10 +8,7 @@ import {
 } from './dto/create-prob.dto';
 import { DeleteProblemDto } from './dto/delete-prob.dto';
 import { UpdateImageDto, UpdateImageInterface } from './dto/update-image.dto';
-import {
-  UpvoteProblemDto,
-  UpvoteProblemInterface,
-} from './dto/upvote-prob.dto';
+import { UpvoteProblemDto } from './dto/upvote-prob.dto';
 import { UserProblemDto } from './dto/user-prob.dto';
 
 @Injectable()
