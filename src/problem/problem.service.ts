@@ -91,9 +91,10 @@ export class ProblemService {
       try {
         const result = await tx.run(query);
         const records = result.records.map((record) => {
-          return record.map((i) => {
+          const rec = record.map((i) => {
             return i;
           });
+          return rec[0];
         });
         return records;
       } catch (e) {
