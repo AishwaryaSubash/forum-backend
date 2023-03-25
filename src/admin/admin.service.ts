@@ -2,17 +2,30 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Neo4jError } from 'neo4j-driver';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
 import { MarkAnswerDto } from './dto/mark-answer.dto';
+import { DeleteUserDto } from './dto/user.dto';
 
 @Injectable()
 export class AdminService {
   constructor(private readonly neo4jService: Neo4jService) {}
 
-  async deleteUser() {
+  async deleteUser(deleteUserDto :DeleteUserDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (u:User {name:$name})-[:ASK]->(q:Problem)
-                   MATCH (u)-[:COUNTER]->(r:Reply)
-                   MATCH (u)-[:POST]->(r)
-                   DETACH DELETE u,q,r RETURN u,q,r`;
+    const query = `MATCH (u:User {name:$username})
+                   DETACH DELETE u RETURN u`;
+    return await session.executeWrite(async (tx) => {
+      try {
+        const result = await tx.run(query, {
+          username: deleteUserDto.username,
+        });
+        return result;
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else {
+          throw e;
+        }
+      }
+    });
   }
 
   async markAnswer(markAnswerDto: MarkAnswerDto) {
