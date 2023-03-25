@@ -7,6 +7,7 @@ import {
 import * as argon2 from 'argon2';
 import { Neo4jError } from 'neo4j-driver';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
+import { AddCategDto, DelCategDto } from './dto/category.dto';
 import { CreateUserDto, CreateUserInterface } from './dto/create-user.dto';
 import { FollowUserDto, FollowUserInterface } from './dto/follow-user.dto';
 import {
@@ -280,6 +281,101 @@ export class UserService {
         } else {
           throw new ForbiddenException({ unfollowed: false });
         }
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else if (e instanceof ForbiddenException) {
+          throw e;
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+
+  async addCateg(addCategDto: AddCategDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (u:User {name:$name}) 
+                   MATCH (p:Problem {question:$question}) 
+                   MATCH (u)-[r:ASK]->(p) 
+                   SET r.categName=$categName
+                   RETURN r`;
+    return await session.executeWrite(async (tx) => {
+      try {
+        const result = await tx.run(query, {
+          name: addCategDto.name,
+          categName: addCategDto.categName,
+          question: addCategDto.question,
+        });
+        const records = result.records.map((record) => {
+          const returnValue = record.map((value) => {
+            return value.properties;
+          });
+          return returnValue;
+        });
+        return records;
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else if (e instanceof ForbiddenException) {
+          throw e;
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+
+  async fetchAllCateg() {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (u:User) 
+                   MATCH (p:Problem) 
+                   MATCH (u)-[r:ASK]->(p)
+                   WHERE r.categName IS NOT NULL 
+                   RETURN r`;
+    return await session.executeRead(async (tx) => {
+      try {
+        const result = await tx.run(query);
+        const records = result.records.map((record) => {
+          const returnValue = record.map((value) => {
+            return value.properties;
+          });
+          return returnValue[0].categName;
+        });
+        const set = new Set(records);
+        return Array.from(set);
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else if (e instanceof ForbiddenException) {
+          throw e;
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+
+  async deleteCateg(delCategDto: DelCategDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (u:User {name:$name}) 
+                   MATCH (p:Problem {question:$question}) 
+                   MATCH (u)-[r:ASK]->(p) 
+                   SET r.categName=NULL
+                   RETURN r`;
+    return await session.executeWrite(async (tx) => {
+      try {
+        const result = await tx.run(query, {
+          name: delCategDto.name,
+          question: delCategDto.question,
+        });
+        const records = result.records.map((record) => {
+          const returnValue = record.map((value) => {
+            return value.properties;
+          });
+          return returnValue;
+        });
+        return records;
       } catch (e) {
         if (e instanceof Neo4jError) {
           throw new HttpException(e.message, HttpStatus.FORBIDDEN);

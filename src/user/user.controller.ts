@@ -1,5 +1,6 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard/jwt.guard';
+import { AddCategDto, DelCategDto } from './dto/category.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FollowUserDto } from './dto/follow-user.dto';
 import { GetUserDetailsDto } from './dto/get-user-details.dto';
@@ -59,5 +60,18 @@ export class UserController {
   @Post('unfollowUser')
   async unfollowUser(@Body() followUser: FollowUserDto) {
     return await this.userService.unfollowUser(followUser);
+  }
+
+  @Post('addCateg')
+  async addCateg(@Body() addCategDto: AddCategDto) {
+    return await this.userService.addCateg(addCategDto);
+  }
+  @Get('fetchAllCateg')
+  async fetchAllCateg() {
+    return await this.userService.fetchAllCateg();
+  }
+  @Post('deleteCateg')
+  async deleteCateg(@Body() delCategDto: DelCategDto) {
+    return await this.userService.deleteCateg(delCategDto);
   }
 }

@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { AllProbInCategDto } from './dto/category.dto';
 import { CreateProblemDto } from './dto/create-prob.dto';
 import { DeleteProblemDto } from './dto/delete-prob.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
@@ -31,11 +32,16 @@ export class ProblemController {
     return await this.problemService.upvoteProblem(upvoteProblemDto);
   }
   @Post('updateImage')
-  async updateImage(updateImageDto: UpdateImageDto) {
+  async updateImage(@Body() updateImageDto: UpdateImageDto) {
     return await this.problemService.updateImage(updateImageDto);
   }
   @Post('deleteProblem')
-  async deleteProblem(deleteProblemDto: DeleteProblemDto) {
+  async deleteProblem(@Body() deleteProblemDto: DeleteProblemDto) {
     return await this.problemService.deleteProblem(deleteProblemDto);
+  }
+
+  @Post('fetchAllProbInCateg')
+  async fetchAllProbInCateg(@Body() allProbInCategDto: AllProbInCategDto) {
+    return await this.problemService.fetchAllProbInCateg(allProbInCategDto);
   }
 }

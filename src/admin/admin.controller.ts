@@ -1,4 +1,13 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { AdminService } from './admin.service';
+import { MarkAnswerDto } from './dto/mark-answer.dto';
 
 @Controller('admin')
-export class AdminController {}
+export class AdminController {
+  constructor(private readonly adminService: AdminService) {}
+
+  @Post('markAnswer')
+  async markAnswer(@Body() markAnswerDto: MarkAnswerDto) {
+    return await this.adminService.markAnswer(markAnswerDto);
+  }
+}

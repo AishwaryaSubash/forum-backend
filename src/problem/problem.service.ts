@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Neo4jError } from 'neo4j-driver';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
+import { AllProbInCategDto } from './dto/category.dto';
 import {
   CreateProblemDto,
   CreateProblemInterface,
@@ -200,6 +201,39 @@ export class ProblemService {
         var record = result.records.map((record) => {
           const problem = record.get('p');
           return problem.properties;
+        });
+        return record;
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+
+  async fetchAllProbInCateg(allProbInCategDto: AllProbInCategDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (u:User)-[:ASK {categName:$categName}]->(p:Problem)
+                   OPTIONAL MATCH p2 = (p)-[:HAS]->(r:Reply)
+                   OPTIONAL MATCH p3 = (r)<-[:TO]-(re:Reply)
+                   RETURN [u,p2,p3] as res`;
+    return await session.executeRead(async (tx) => {
+      try {
+        const result = await tx.run(query, {
+          categName: allProbInCategDto.categName,
+        });
+        let record = result.records.map((record) => {
+          const problem = record.get('res');
+          const answers = problem.map((answer)=>{
+            return answer;
+          })
+          console.log(answers);
+          // console.log(problem, reply, replyTo);
+          // replyTo = replyTo == null ? { properties: {} } : replyTo;
+          // const problem = record.get('p');
+          return answers;
         });
         return record;
       } catch (e) {
