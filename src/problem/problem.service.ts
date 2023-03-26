@@ -249,7 +249,8 @@ export class ProblemService {
 
   async getOneProblemAndReplies(getOneProblem: UpvoteProblemDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query = `MATCH (p:Problem {question:$question})<-[ask:ASK]-(asker:User)
+    const query = `MATCH (p:Problem {question:$question})
+                   OPTIONAL MATCH (p)<-[ask:ASK]-(asker:User)
                    OPTIONAL MATCH (p)-[:HAS]->(r:Reply)
                    OPTIONAL MATCH (r)<-[:POST]-(u:User)
                    WITH p as p, collect({reply:properties(r),user:{name:properties(u).name,profileImg:properties(u).profileImg}}) as r,
