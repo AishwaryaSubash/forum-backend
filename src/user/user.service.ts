@@ -402,7 +402,7 @@ export class UserService {
           if (returnValue != null) {
             return { profileImg: returnValue.properties.profileImg };
           } else {
-            return {};
+            return { profileImg: '' };
           }
         });
         return records[0];
