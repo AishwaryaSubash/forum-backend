@@ -51,6 +51,12 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @Post('fetchUserProfile')
+  async fetchUserProfile(@Body() fetchProfilePic:GetUserDetailsDto) {
+    return await this.userService.fetchUserProfile(fetchProfilePic)
+  }
+  
+  @UseGuards(JwtGuard)
   @Post('followUser')
   async followUser(@Body() followUser: FollowUserDto) {
     return await this.userService.followUser(followUser);

@@ -387,4 +387,34 @@ export class UserService {
       }
     });
   }
+
+  async fetchUserProfile(fetchProfilePic: GetUserDetailsDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `OPTIONAL MATCH (u:User {name:$name}) 
+                   RETURN u`;
+    return await session.executeRead(async (tx) => {
+      try {
+        const result = await tx.run<GetUserDetailsInterface>(query, {
+          name: fetchProfilePic.name,
+        });
+        const records = result.records.map((record) => {
+          const returnValue = record.get('u');
+          if (returnValue != null) {
+            return { profileImg: returnValue.properties.profileImg };
+          } else {
+            return {};
+          }
+        });
+        return records[0];
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else if (e instanceof ForbiddenException) {
+          throw e;
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
 }
