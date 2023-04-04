@@ -9,6 +9,7 @@ import { updateDescriptionDto } from './dto/update-description.dto';
 import { UserDetailsDto } from './dto/update-details.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserService } from './user.service';
+import { DeleteUserDto } from './dto/delete-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -68,6 +69,12 @@ export class UserController {
     return await this.userService.unfollowUser(followUser);
   }
 
+  @UseGuards(JwtGuard)
+  @Post('deleteUser')
+  async deleteUser(@Body() deleteUserDto: DeleteUserDto) {
+    return await this.userService.deleteUser(deleteUserDto);
+  }
+  
   @Post('addCateg')
   async addCateg(@Body() addCategDto: AddCategDto) {
     return await this.userService.addCateg(addCategDto);

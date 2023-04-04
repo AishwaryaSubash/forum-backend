@@ -24,6 +24,7 @@ import {
   UpdateProfileDto,
   UpdateProfileInterface,
 } from './dto/update-profile.dto';
+import { DeleteUserDto } from './dto/delete-user.dto';
 
 @Injectable()
 export class UserService {
@@ -411,6 +412,26 @@ export class UserService {
           throw new HttpException(e.message, HttpStatus.FORBIDDEN);
         } else if (e instanceof ForbiddenException) {
           throw e;
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+
+  async deleteUser(deleteUserDto: DeleteUserDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH (u:User {name:$username})
+                   DETACH DELETE u RETURN u`;
+    return await session.executeWrite(async (tx) => {
+      try {
+        const result = await tx.run(query, {
+          username: deleteUserDto.username,
+        });
+        return result;
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
         } else {
           throw e;
         }
