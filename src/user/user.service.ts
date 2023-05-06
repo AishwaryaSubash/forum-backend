@@ -341,7 +341,7 @@ export class UserService {
           const returnValue = record.map((value) => {
             return value.properties;
           });
-          return returnValue[0].categName;
+          return returnValue[0];
         });
         const set = new Set(records);
         return Array.from(set);
