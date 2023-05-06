@@ -333,7 +333,7 @@ export class UserService {
                    MATCH (p:Problem) 
                    MATCH (u)-[r:ASK]->(p)
                    WHERE r.categName IS NOT NULL 
-                   RETURN r`;
+                   RETURN COLLECT(DISTINCT r.categName)`;
     return await session.executeRead(async (tx) => {
       try {
         const result = await tx.run(query);
