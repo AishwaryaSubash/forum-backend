@@ -339,12 +339,11 @@ export class UserService {
         const result = await tx.run(query);
         const records = result.records.map((record) => {
           const returnValue = record.map((value) => {
-            return value.properties;
+            return value;
           });
           return returnValue[0];
         });
-        const set = new Set(records);
-        return Array.from(set);
+        return records[0];
       } catch (e) {
         if (e instanceof Neo4jError) {
           throw new HttpException(e.message, HttpStatus.FORBIDDEN);
