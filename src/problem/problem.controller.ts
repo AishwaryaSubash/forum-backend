@@ -3,7 +3,7 @@ import { AllProbInCategDto } from './dto/category.dto';
 import { CreateProblemDto } from './dto/create-prob.dto';
 import { DeleteProblemDto } from './dto/delete-prob.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
-import { UpvoteProblemDto } from './dto/upvote-prob.dto';
+import { GetOneProblemDto, UpvoteProblemDto } from './dto/upvote-prob.dto';
 import { UserProblemDto } from './dto/user-prob.dto';
 import { ProblemService } from './problem.service';
 
@@ -46,7 +46,7 @@ export class ProblemController {
   }
 
   @Post('getOneProblemAndReplies')
-  async getOneProblemAndReplies(@Body() getOneProblem: UpvoteProblemDto) {
+  async getOneProblemAndReplies(@Body() getOneProblem: GetOneProblemDto) {
     return await this.problemService.getOneProblemAndReplies(getOneProblem);
   }
 }
