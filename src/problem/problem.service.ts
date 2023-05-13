@@ -130,16 +130,42 @@ export class ProblemService {
 
   async upvoteProblem(upvoteProblemDto: UpvoteProblemDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query1 = `MATCH (p:Problem {question:$question}) 
+    const query = `MATCH (p:Problem {question:$question}) 
                     MATCH (u:User {name:$username})
                     MERGE (u)-[:UPVOTE]->(p)
                     WITH p MATCH ()-[r:UPVOTE]->(p)
                     RETURN count(r) as count`;
     return await session.executeWrite(async (tx) => {
       try {
-        const result = await tx.run(query1, {
+        const result = await tx.run(query, {
           question: upvoteProblemDto.question,
           username: upvoteProblemDto.username,
+        });
+        const records = result.records.map((record) => {
+          return record.map((rec) => {
+            return rec;
+          });
+        });
+
+        return { count: records[0][0].low };
+      } catch (e) {
+        if (e instanceof Neo4jError) {
+          throw new HttpException(e.message, HttpStatus.FORBIDDEN);
+        } else {
+          throw e;
+        }
+      }
+    });
+  }
+
+  async getUpvoteCount(getUpvoteDto: GetOneProblemDto) {
+    const session = this.neo4jService.driver.session({ database: 'neo4j' });
+    const query = `MATCH ()-[r:UPVOTE]->(p:Problem {question:$question}) 
+                   RETURN count(r) as count`;
+    return await session.executeWrite(async (tx) => {
+      try {
+        const result = await tx.run(query, {
+          question: getUpvoteDto.question,
         });
         const records = result.records.map((record) => {
           return record.map((rec) => {

@@ -31,6 +31,10 @@ export class ProblemController {
   async upvoteProblem(@Body() upvoteProblemDto: UpvoteProblemDto) {
     return await this.problemService.upvoteProblem(upvoteProblemDto);
   }
+  @Post('getUpvoteCount')
+  async getUpvoteCount(@Body() getUpvoteDto: GetOneProblemDto) {
+    return await this.problemService.getUpvoteCount(getUpvoteDto);
+  }
   @Post('updateImage')
   async updateImage(@Body() updateImageDto: UpdateImageDto) {
     return await this.problemService.updateImage(updateImageDto);
