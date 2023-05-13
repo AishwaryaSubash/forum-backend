@@ -130,32 +130,29 @@ export class ProblemService {
 
   async upvoteProblem(upvoteProblemDto: UpvoteProblemDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
-    const query1 = `MATCH (p:Problem {question:$question}) RETURN p`;
-    const query2 = `MATCH (p:Problem {question:$question}) SET p.upvote=$upvote RETURN p`;
+    const query1 = `MATCH (p:Problem {question:$question}) 
+                    MATCH (u:User {name:$username})
+                    MERGE (u)-[:UPVOTE]->(p)
+                    WITH p MATCH ()-[r:UPVOTE]->(p)
+                    RETURN count(r) as count`;
     return await session.executeWrite(async (tx) => {
       try {
         const result = await tx.run(query1, {
           question: upvoteProblemDto.question,
+          username: upvoteProblemDto.username,
         });
-        var upvote = result.records.map((record) => {
-          const problem = record.get('p');
-          return problem.properties;
+        const records = result.records.map((record) => {
+          return record.map((rec) => {
+            return rec;
+          });
         });
-        var upvoteCount = upvote[0].upvote + 1;
-        const result2 = await tx.run(query2, {
-          question: upvoteProblemDto.question,
-          upvote: upvoteCount,
-        });
-        var record = result2.records.map((record) => {
-          const problem = record.get('p');
-          return problem.properties;
-        });
-        return record;
+
+        return { count: records[0][0].low };
       } catch (e) {
         if (e instanceof Neo4jError) {
           throw new HttpException(e.message, HttpStatus.FORBIDDEN);
         } else {
-          throw new HttpException(e, HttpStatus.NOT_FOUND);
+          throw e;
         }
       }
     });

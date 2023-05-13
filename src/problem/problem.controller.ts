@@ -48,6 +48,5 @@ export class ProblemController {
   @Post('getOneProblemAndReplies')
   async getOneProblemAndReplies(@Body() getOneProblem: UpvoteProblemDto) {
     return await this.problemService.getOneProblemAndReplies(getOneProblem);
-    
   }
 }
