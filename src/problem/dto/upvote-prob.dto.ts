@@ -11,6 +11,12 @@ export class UpvoteProblemDto {
   username: string;
 }
 
+export class GetOneProblemDto {
+  @IsString()
+  @IsNotEmpty()
+  question: string;
+}
+
 export interface UpvoteProblem extends UpvoteProblemDto {}
 export type UpvoteProblemType = Node<Integer, UpvoteProblem>;
 export interface UpvoteProblemInterface {

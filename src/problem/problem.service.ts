@@ -8,7 +8,7 @@ import {
 } from './dto/create-prob.dto';
 import { DeleteProblemDto } from './dto/delete-prob.dto';
 import { UpdateImageDto, UpdateImageInterface } from './dto/update-image.dto';
-import { UpvoteProblemDto } from './dto/upvote-prob.dto';
+import { GetOneProblemDto, UpvoteProblemDto } from './dto/upvote-prob.dto';
 import { UserProblemDto } from './dto/user-prob.dto';
 
 @Injectable()
@@ -244,7 +244,7 @@ export class ProblemService {
     });
   }
 
-  async getOneProblemAndReplies(getOneProblem: UpvoteProblemDto) {
+  async getOneProblemAndReplies(getOneProblem: GetOneProblemDto) {
     const session = this.neo4jService.driver.session({ database: 'neo4j' });
     const query = `MATCH (p:Problem {question:$question})
                    OPTIONAL MATCH (p)<-[ask:ASK]-(asker:User)
